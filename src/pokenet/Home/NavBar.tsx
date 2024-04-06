@@ -6,7 +6,7 @@ function NavBar() {
     const navigate = useNavigate();
     return (
         <nav className="navbar navbar-expand navbar-dark bg-dark justify-content-between">
-            <a className="navbar-brand ms-4" href="#">Pokenet</a>
+            <Link to={`/Pokenet/Home`} className="navbar-brand ms-4"> Pokenet </Link>
             <ul className="navbar-nav mr-auto">
                 <li className="nav-item">
                     <Link to={`/Pokenet/Account/Profile`} className="nav-link"> Profile </Link>

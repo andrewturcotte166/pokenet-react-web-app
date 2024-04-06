@@ -1,9 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Pokedex from 'pokedex-promise-v2';
 const P = new Pokedex();
-const API_BASE = process.env.REACT_APP_API_BASE;
 function Search() {
     const { keyword } = useParams();
     const [results, setResults] = useState<any>([]);
@@ -34,7 +32,7 @@ function Search() {
     };
     useEffect(() => {
         findResults();
-    }, [])
+    })
     return (
         <div className="p-4">
             <h1>{`Search results for "${keyword}":`}</h1>
