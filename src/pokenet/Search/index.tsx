@@ -1,11 +1,30 @@
-import { useParams } from "react-router-dom";
+import { useParams, } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { BsPlusCircleFill } from "react-icons/bs";
+import { Pokemon } from "../Pokemon/client";
+import { User } from "../Users/client";
+import * as pokeClient from "../Pokemon/client";
+import * as userClient from "../Users/client";
 import Pokedex from 'pokedex-promise-v2';
 const P = new Pokedex();
 function Search() {
     const { keyword } = useParams();
+    const [profile, setProfile] = useState<User>({
+        _id: "", username: "", password: "",
+        firstName: "", lastName: "", dob: "", email: "", role: "USER"
+    });
     const [results, setResults] = useState<any>([]);
-
+    const [pokemon, setPokemon] = useState<Pokemon>({
+        _id: "", userId: "", species: "", name: "", gender: "Genderless", level: 50, shiny: false,
+    });
+    const fetchProfile = async () => {
+        try {
+            const account = await userClient.profile();
+            setProfile(account);
+        } catch (error) {
+            return
+        }
+    };
     const findResults = async () => {
         const types = (await P.getTypesList()).results;
         const typeList = types.map((t: any) => t.name);
@@ -32,18 +51,31 @@ function Search() {
     };
     useEffect(() => {
         findResults();
-    })
+        fetchProfile();
+    }, [keyword])
+    const createPokemon = async (poke: any) => {
+        try {
+            const newPokemon = await pokeClient.createPokemon({
+                _id: "", userId: profile._id,
+                species: poke.name, name: poke.name, gender: "Genderless", level: 50, shiny: false,
+            });
+            console.log(newPokemon)
+        } catch (err) {
+            console.log(err);
+        }
+    };
     return (
         <div className="p-4">
             <h1>{`Search results for "${keyword}":`}</h1>
             {results[0] ? (
-                results.map((result: any) =>
+                results.map((result: any, key=result.name) =>
                     <h3>
                         {result.name ? result.name : result.pokemon.name}
                         {result.sprites && (
                             <>
                                 <img src={result.sprites.front_default} alt="pokemon sprite"></img>
                                 <img src={result.sprites.other.showdown.front_default} alt="animated pokemon sprite"></img>
+                                {profile._id && (<BsPlusCircleFill className="ms-2" onClick={() => createPokemon(result)} />)}
                             </>
                         )}
                     </h3>)
