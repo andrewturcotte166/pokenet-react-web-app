@@ -31,7 +31,6 @@ function NavBar() {
                     </li>
                     <li className="nav-item">
                         <Link to={`/Pokenet/`} onClick={() => client.signout()} className="nav-link"> Signout </Link>
-                        setAuthenticated(false);
                     </li>
                 </ul>
                 ) : (
