@@ -1,30 +1,25 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router";
 import * as client from "../Users/client";
 
 function Home() {
     const [profile, setProfile] = useState<any>();
-    const [authenticated, setAuthenticated] = useState(false);
-    const navigate = useNavigate();
-    const location = useLocation();
+    const fetchProfile = async () => {
+        try {
+            const account = await client.profile();
+            setProfile(account);
+        } catch (error) {
+            console.log("Not logged in")
+        }
+    };
 
     useEffect(() => {
-        const checkAuthStatus = async () => {
-            try {
-                const account = await client.profile();
-                setAuthenticated(true);
-                setProfile(account);
-            } catch (error) {
-                setAuthenticated(false);
-            }
-        };
-        checkAuthStatus();
-    }, [location.pathname]); 
+        fetchProfile();
+    }, []); 
     
     return(
         <div className="p-4">
             <h1>Welcome to Pokenet!</h1>
-            {authenticated && <h3>Welcome, {profile.role} {profile.firstName}</h3>}
+            {profile && <h3>Welcome, {profile.role} {profile.firstName}</h3>}
         </div>
     );
 }
