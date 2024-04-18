@@ -32,7 +32,7 @@ function Search() {
             // if user searchs for a type (i.e. water, fire, etc.)
             if (typeList.includes(keyword)) {
                 const response = await P.getResource(`/api/v2/type/${keyword}`);
-                const shortenedResults = response.pokemon.slice(0, 5); // could introduce pagination here
+                const shortenedResults = response.pokemon.slice(0, 50); // could introduce pagination here
                 const urls = shortenedResults.map((item: any) => item.pokemon.url);
                 const fullResponse = await P.getResource(urls);
                 setResults(fullResponse);
@@ -67,19 +67,30 @@ function Search() {
     return (
         <div className="p-4">
             <h1>{`Search results for "${keyword}":`}</h1>
-            {results[0] ? (
-                results.map((result: any, key=result.name) =>
-                    <h3>
-                        {result.name ? result.name : result.pokemon.name}
-                        {result.sprites && (
-                            <>
-                                <img src={result.sprites.front_default} alt="pokemon sprite"></img>
-                                <img src={result.sprites.other.showdown.front_default} alt="animated pokemon sprite"></img>
-                                {profile._id && (<BsPlusCircleFill className="ms-2" onClick={() => createPokemon(result)} />)}
-                            </>
-                        )}
-                    </h3>)
-            ) : <h3>No results</h3>}
+            <div className="results-container" style={{ overflowY: "scroll", maxHeight: "580px" }}>
+                <div className="results-list">
+                    {results[0] ? (
+                        results.map((result: any, key=result.name) => (
+                            <div className="result-item">
+                                <h3>
+                                    {result.name ? result.name : result.pokemon.name}
+                                    {result.sprites && (
+                                        <>
+                                            <img src={result.sprites.front_default} alt="pokemon sprite"></img>
+                                            <img src={result.sprites.other.showdown.front_default} alt="animated pokemon sprite"></img>
+                                            {profile._id && (
+                                                <BsPlusCircleFill className="ms-2" onClick={() => createPokemon(result)} />
+                                            )}
+                                        </>
+                                    )}
+                                </h3>
+                            </div>
+                        ))
+                    ) : (
+                        <h3>No results</h3>
+                    )}
+                </div>
+            </div>
         </div>
     );
 }
