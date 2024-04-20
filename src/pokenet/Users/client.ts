@@ -26,6 +26,14 @@ export const updateUser = async (user: any) => {
     const response = await api.put(`${USERS_API}/${user._id}`, user);
     return response.data;
 };
+export const findUserByUsername = async (username: any) => {
+    const response = await api.get(`${USERS_API}/${username}`);
+    return response.data;
+};
+export const findUsersByProfessor = async (professorId: any) => {
+    const response = await api.get(`${USERS_API}/professor/${professorId}`);
+    return response.data;
+};
 export const findAllUsers = async () => {
     const response = await api.get(`${USERS_API}`);
     return response.data;

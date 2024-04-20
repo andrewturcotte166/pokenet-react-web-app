@@ -18,8 +18,9 @@ function Home() {
     
     return(
         <div className="p-4">
-            <h1>Welcome to Pokenet!</h1>
-            {profile && <h3>Welcome, {profile.role} {profile.firstName}</h3>}
+            {profile ? 
+            (<h1>Welcome, {profile.role} {profile.firstName}</h1>) :
+            (<h1>Welcome to Pokenet!</h1>)}
         </div>
     );
 }
