@@ -1,4 +1,4 @@
-import { useState, } from "react";
+import { useEffect, useState, } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { User } from "./client";
 import * as client from "./client";
@@ -19,16 +19,28 @@ export default function Login() {
             }
         }
     };
-    const signup = async () => {
+    // const signup = async () => {
+    //     try {
+    //         await client.signup(credentials);
+    //         navigate("/Pokenet/Account/Profile");
+    //     } catch (err: any) {
+    //         if (err.response) {
+    //             setError(err.response.data.message);
+    //         }
+    //     }
+    // };
+    const fetchProfile = async () => {
         try {
-            await client.signup(credentials);
+            await client.profile();
             navigate("/Pokenet/Account/Profile");
-        } catch (err: any) {
-            if (err.response) {
-                setError(err.response.data.message);
-            }
+        } catch (error) {
+  
         }
     };
+    useEffect(() => {
+        fetchProfile();
+    }, []);
+
     return (
         <div>
             <h1>Login</h1>
@@ -38,7 +50,10 @@ export default function Login() {
             <input value={credentials.password} placeholder="password" type="password" onChange={(e) =>
                 setCredentials({ ...credentials, password: e.target.value })} /><br />
             <button className="btn btn-primary mt-2" onClick={login}> Login </button>
-            <button className="btn btn-success mt-2 ms-2" onClick={signup}> Signup </button>
+            <Link to="/Pokenet/Account/Signup"
+                className="btn btn-success ms-2 mt-2">
+                Signup
+            </Link>
         </div>
     );
 }
