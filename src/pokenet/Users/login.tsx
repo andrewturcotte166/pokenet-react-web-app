@@ -19,16 +19,7 @@ export default function Login() {
             }
         }
     };
-    // const signup = async () => {
-    //     try {
-    //         await client.signup(credentials);
-    //         navigate("/Pokenet/Account/Profile");
-    //     } catch (err: any) {
-    //         if (err.response) {
-    //             setError(err.response.data.message);
-    //         }
-    //     }
-    // };
+
     const fetchProfile = async () => {
         try {
             await client.profile();
