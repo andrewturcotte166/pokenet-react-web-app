@@ -2,9 +2,9 @@ import * as client from "./client";
 import { useState, useEffect } from "react";
 import { Link, useNavigate, } from "react-router-dom";
 import { BsTrash3Fill, } from "react-icons/bs";
-// import { Pokemon } from "../Pokemon/client";
 import * as pokeClient from "../Pokemon/client";
 import Pokedex from 'pokedex-promise-v2';
+import QuickProfile from "./quickProfile";
 const P = new Pokedex();
 function Profile() {
     const [profile, setProfile] = useState<any>();
@@ -140,16 +140,13 @@ function Profile() {
                     {profile.role === "PROFESSOR" ?
                         (<>
                             <h3>Trainers:</h3>
-                            {trainers && trainers.map((trainer: any) => (
-                                <h4>Name: <Link to={`/Pokenet/Account/User/${trainer.username}`}> {trainer.firstName} {trainer.lastName} </Link></h4>))}
+                            {trainers && trainers.map((trainer: any) => (<QuickProfile profile={trainer} />))}
                         </>
                         ) :
                         (<>
                             <h3>Professor:</h3>
                             {professor ?
-                                (<>
-                                    <h4>Name: <Link to={`/Pokenet/Account/User/${professor.username}`}> {professor.firstName} {professor.lastName} </Link></h4>
-                                </>) :
+                                (<QuickProfile profile={professor} />) :
                                 (<h4>No professor</h4>)}
                         </>
                         )}

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, } from "react-router-dom";
 import * as pokeClient from "../Pokemon/client";
 import Pokedex from 'pokedex-promise-v2';
+import QuickProfile from "./quickProfile";
 const P = new Pokedex();
 function Trainer({ trainer }: any) {
     const location = useLocation();
@@ -94,16 +95,13 @@ function Trainer({ trainer }: any) {
                     {trainer.role === "PROFESSOR" ?
                         (<>
                             <h3>Trainers:</h3>
-                            {trainers && trainers.map((trainer: any) => (
-                                <h4>Name: <Link to={`/Pokenet/Account/User/${trainer.username}`}> {trainer.firstName} {trainer.lastName} </Link></h4>))}
+                            {trainers && trainers.map((trainer: any) => (<QuickProfile profile={trainer}/>))}
                         </>
                         ) :
                         (<>
                             <h3>Professor:</h3>
                             {professor ?
-                                (<>
-                                    <h4>Name: <Link to={`/Pokenet/Account/User/${professor.username}`}> {professor.firstName} {professor.lastName} </Link></h4>
-                                </>) :
+                                (<QuickProfile profile={professor}/>) :
                                 (<h4>No professor</h4>)}
                         </>
                         )}

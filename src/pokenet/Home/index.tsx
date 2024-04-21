@@ -14,13 +14,13 @@ function Home() {
 
     useEffect(() => {
         fetchProfile();
-    }, []); 
-    
-    return(
+    }, []);
+
+    return (
         <div className="p-4">
-            {profile ? 
-            (<h1>Welcome, {profile.role} {profile.firstName}</h1>) :
-            (<h1>Welcome to Pokenet!</h1>)}
+            {profile ?
+                (<h1>Welcome, {profile.role} {profile.firstName}</h1>) :
+                (<h1>Welcome to Pokenet!</h1>)}
         </div>
     );
 }
