@@ -1,4 +1,4 @@
-import { useParams, } from "react-router-dom";
+import { Link, useParams, } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { BsPlusCircleFill } from "react-icons/bs";
 import { Pokemon } from "../Pokemon/client";
@@ -73,6 +73,7 @@ function Search() {
                         results.map((result: any, key=result.name) => (
                             <div className="result-item">
                                 <h3>
+                                    <Link to={`/Pokenet/Details/${result.name}`}>
                                     {result.name ? result.name : result.pokemon.name}
                                     {result.sprites && (
                                         <>
@@ -83,6 +84,7 @@ function Search() {
                                             )}
                                         </>
                                     )}
+                                    </Link>
                                 </h3>
                             </div>
                         ))
