@@ -79,12 +79,12 @@ function Search() {
                                         <>
                                             <img src={result.sprites.front_default} alt="pokemon sprite"></img>
                                             <img src={result.sprites.other.showdown.front_default} alt="animated pokemon sprite"></img>
-                                            {profile._id && (
-                                                <BsPlusCircleFill className="ms-2" onClick={() => createPokemon(result)} />
-                                            )}
-                                        </>
-                                    )}
+                                            </>
+                                        )}
                                     </Link>
+                                    {profile._id && (
+                                        <BsPlusCircleFill className="ms-2" onClick={() => createPokemon(result)} />
+                                    )}
                                 </h3>
                             </div>
                         ))

@@ -174,7 +174,9 @@ function PokemonDetails() {
             <button onClick={handleToggleShiny} style={{ backgroundColor: 'transparent', border: 'none' }}>
                 {isShiny ? <IoMdStar size={80} color="gold" /> : <IoMdStarOutline size={80} color="black" />} 
             </button>
-            <BsPlusCircleFill className="ms-2" onClick={() => createPokemon(pokemon.name)} />
+            {profile._id && (
+                <BsPlusCircleFill className="ms-2" onClick={() => createPokemon(pokemon)} />
+            )}
             </h1>
             {frontSprite && (
                 <img src={frontSprite} alt={`${pokemon.name} sprite`} />
