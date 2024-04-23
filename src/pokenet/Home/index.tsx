@@ -14,13 +14,12 @@ function Home() {
 
     useEffect(() => {
         fetchProfile();
-    }, []);
+    }, []); 
 
-    return (
+    return(
         <div className="p-4">
-            {profile ?
-                (<h1>Welcome, {profile.role} {profile.firstName}</h1>) :
-                (<h1>Welcome to Pokenet!</h1>)}
+            <h1>Welcome to Pokenet!</h1>
+            {profile && <h3>Welcome, {profile.role.charAt(0) + profile.role.slice(1).toLowerCase()} {profile.firstName.charAt(0).toUpperCase() + profile.firstName.slice(1).toLowerCase()}</h3>}
         </div>
     );
 }
