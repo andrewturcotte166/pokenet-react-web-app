@@ -1,34 +1,44 @@
 import * as client from "./client";
 import { useState, useEffect } from "react";
-import { Link, useLocation, } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import * as pokeClient from "../Pokemon/client";
 import Pokedex from 'pokedex-promise-v2';
 import QuickProfile from "./quickProfile";
 const P = new Pokedex();
-function Trainer({ trainer }: any) {
+function Trainer() {
     const location = useLocation();
+    const { username } = useParams();
+    const [account, setAccount] = useState<any>();
+    const fetchProfile = async () => {
+        try {
+            const account = await client.findUserByUsername(username);
+            setAccount(account);
+        } catch (error) {
+            console.log("User not found")
+        }
+    };
     const [pokemonList, setPokemonList] = useState<any[]>([]);
     const [professor, setProfessor] = useState<any>();
     const [trainers, setTrainers] = useState<any>();
     const fetchProfessor = async () => {
         try {
-            const account = await client.findUserByUsername(trainer.professorId);
-            setProfessor(account);
+            const professor = await client.findUserByUsername(account.professorId);
+            setProfessor(professor);
         } catch (error) {
             console.log("Professor not found")
         }
     };
     const fetchTrainers = async () => {
         try {
-            const trainers = await client.findUsersByProfessor(trainer.username);
+            const trainers = await client.findUsersByProfessor(account.username);
             setTrainers(trainers);
         } catch (error) {
             console.log("Professor not found")
         }
     };
     const fetchPokemon = async () => {
-        if (trainer && trainer._id) {
-            const pokemonList = await pokeClient.findPokemonByUser(trainer);
+        if (account && account._id) {
+            const pokemonList = await pokeClient.findPokemonByUser(account);
             pokemonList.map(async (poke: any) => {
                 const pokeData = await P.getPokemonByName(poke.species);
                 poke.sprite = pokeData.sprites.front_default;
@@ -39,26 +49,30 @@ function Trainer({ trainer }: any) {
         }
     };
     useEffect(() => {
-        console.log(location)
-        fetchPokemon();
-        if (trainer.role === "TRAINER" && trainer.professorId) {
-            fetchProfessor();
+        fetchProfile();
+    }, []);
+    useEffect(() => {
+        if (account && account._id) {
+            fetchPokemon();
+            if (account.role === "TRAINER" && account.professorId) {
+                fetchProfessor();
+            }
+            if (account.role === "PROFESSOR") {
+                fetchTrainers();
+            }
         }
-        if (trainer.role === "PROFESSOR") {
-            fetchTrainers();
-        }
-    }, [location.pathname]);
+    }, [location.pathname, account,]);
     return (
         <div>
-            {trainer && (
+            {account && (
                 <div>
-                    {trainer.role === "PROFESSOR" ? (
+                    {account.role === "PROFESSOR" ? (
                         <h1>Professor Profile</h1>) :
                         <h1>Trainer Profile</h1>}
-                    <h3>Name: {trainer.firstName}</h3>
-                    <h3>Region: {trainer.region}</h3>
-                    <h3>Favorite Pokemon: {trainer.favoritePokemon}</h3>
-                    <h3>Favorite Type: {trainer.favoriteType}</h3>
+                    <h3>Name: {account.firstName}</h3>
+                    <h3>Region: {account.region}</h3>
+                    <h3>Favorite Pokemon: {account.favoritePokemon}</h3>
+                    <h3>Favorite Type: {account.favoriteType}</h3>
                     <table className="table">
                         <thead>
                             <tr>
@@ -91,17 +105,16 @@ function Trainer({ trainer }: any) {
                                 </tr>))}
                         </tbody>
                     </table>
-                    {/* TODO: refactor to use a shared component that displays friend/professor/trainer information */}
-                    {trainer.role === "PROFESSOR" ?
+                    {account.role === "PROFESSOR" ?
                         (<>
                             <h3>Trainers:</h3>
-                            {trainers && trainers.map((trainer: any) => (<QuickProfile profile={trainer}/>))}
+                            {trainers && trainers.map((trainer: any) => (<QuickProfile profile={trainer} />))}
                         </>
                         ) :
                         (<>
                             <h3>Professor:</h3>
                             {professor ?
-                                (<QuickProfile profile={professor}/>) :
+                                (<QuickProfile profile={professor} />) :
                                 (<h4>No professor</h4>)}
                         </>
                         )}
