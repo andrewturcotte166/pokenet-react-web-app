@@ -1,4 +1,4 @@
-import { useParams, } from "react-router-dom";
+import { Link, useParams, } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { BsPlusCircleFill } from "react-icons/bs";
 import { Pokemon } from "../Pokemon/client";
@@ -73,15 +73,17 @@ function Search() {
                         results.map((result: any, key=result.name) => (
                             <div className="result-item">
                                 <h3>
+                                    <Link to={`/Pokenet/Details/${result.name}`}>
                                     {result.name ? result.name : result.pokemon.name}
                                     {result.sprites && (
                                         <>
                                             <img src={result.sprites.front_default} alt="pokemon sprite"></img>
                                             <img src={result.sprites.other.showdown.front_default} alt="animated pokemon sprite"></img>
-                                            {profile._id && (
-                                                <BsPlusCircleFill className="ms-2" onClick={() => createPokemon(result)} />
-                                            )}
-                                        </>
+                                            </>
+                                        )}
+                                    </Link>
+                                    {profile._id && (
+                                        <BsPlusCircleFill className="ms-2" onClick={() => createPokemon(result)} />
                                     )}
                                 </h3>
                             </div>
