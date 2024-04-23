@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../Users/login";
 import Profile from "../Users/profile";
+import Trainer from "../Users/trainer";
 import Signup from "../Users/signup";
 export default function Account() {
     return (
@@ -9,8 +10,8 @@ export default function Account() {
                 <Route path="/" element={<Navigate to="/Pokenet/Account/Profile" />} />
                 <Route path="/Login" element={<Login />} />
                 <Route path="/Profile" element={<Profile />} />
+                <Route path="/User/:username" element={<Trainer />} />
                 <Route path="/Signup" element={<Signup />} />
-                {/* <Route path="/Admin/Users" element={<UserTable />} /> */}
             </Routes>
         </div>
     );

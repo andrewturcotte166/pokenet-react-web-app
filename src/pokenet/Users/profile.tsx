@@ -1,10 +1,10 @@
 import * as client from "./client";
 import { useState, useEffect } from "react";
-import { useNavigate, } from "react-router-dom";
+import { Link, useNavigate, } from "react-router-dom";
 import { BsTrash3Fill, } from "react-icons/bs";
-// import { Pokemon } from "../Pokemon/client";
 import * as pokeClient from "../Pokemon/client";
 import Pokedex from 'pokedex-promise-v2';
+import QuickProfile from "./quickProfile";
 const P = new Pokedex();
 function Profile() {
     const [profile, setProfile] = useState<any>();
@@ -12,6 +12,24 @@ function Profile() {
     const [pokemon, setPokemon] = useState<any>({
         _id: "", userId: "", species: "", name: "", gender: "", level: 50, shiny: false,
     });
+    const [professor, setProfessor] = useState<any>();
+    const [trainers, setTrainers] = useState<any>();
+    const fetchProfessor = async () => {
+        try {
+            const account = await client.findUserByUsername(profile.professorId);
+            setProfessor(account);
+        } catch (error) {
+            console.log("Professor not found")
+        }
+    };
+    const fetchTrainers = async () => {
+        try {
+            const trainers = await client.findUsersByProfessor(profile.username);
+            setTrainers(trainers);
+        } catch (error) {
+            console.log("Professor not found")
+        }
+    };
     const navigate = useNavigate();
     const fetchProfile = async () => {
         try {
@@ -54,13 +72,20 @@ function Profile() {
     }, []);
     useEffect(() => {
         fetchPokemon();
+        if (profile && profile.role === "TRAINER" && profile.professorId) {
+            fetchProfessor();
+        }
+        if (profile && profile.role === "PROFESSOR") {
+            fetchTrainers();
+        }
     }, [profile]);
     return (
         <div>
             {profile && (
                 <div>
-                    <h1>Trainer Profile</h1>
-                    <h3>Name: {profile.firstName}</h3>
+                    <h1>My Profile</h1>
+                    <h3>First Name: {profile.firstName}</h3>
+                    <h3>Last Name: {profile.lastName}</h3>
                     <h3>Region: {profile.region}</h3>
                     <h3>Favorite Pokemon: {profile.favoritePokemon}</h3>
                     <h3>Favorite Type: {profile.favoriteType}</h3>
@@ -104,13 +129,27 @@ function Profile() {
                                     <td>{poke.gender}</td>
                                     <td>{poke.shiny ? "Yes" : "No"}</td>
                                     <td>
-                                <button onClick={() => deletePokemon(poke)}>
-                                    <BsTrash3Fill />
-                                </button>
-                            </td>
+                                        <button onClick={() => deletePokemon(poke)}>
+                                            <BsTrash3Fill />
+                                        </button>
+                                    </td>
                                 </tr>))}
                         </tbody>
                     </table>
+                    {/* TODO: refactor to use a shared component that displays friend/professor/trainer information */}
+                    {profile.role === "PROFESSOR" ?
+                        (<>
+                            <h3>Trainers:</h3>
+                            {trainers && trainers.map((trainer: any) => (<QuickProfile profile={trainer} />))}
+                        </>
+                        ) :
+                        (<>
+                            <h3>Professor:</h3>
+                            {professor ?
+                                (<QuickProfile profile={professor} />) :
+                                (<h4>No professor</h4>)}
+                        </>
+                        )}
                     <h3>Friends:</h3>
                     <button className="btn btn-danger" onClick={signout}>
                         Signout
