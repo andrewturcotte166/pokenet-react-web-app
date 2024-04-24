@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import * as client from "../Users/client";
+import HomeView from "./HomeView";
 
 function Home() {
     const [profile, setProfile] = useState<any>();
@@ -19,6 +20,7 @@ function Home() {
     return(
         <div className="p-4">
             <h1>Welcome to Pokenet!</h1>
+            {!profile && <HomeView/>}
             {profile && <h3>Welcome, {profile.role.charAt(0) + profile.role.slice(1).toLowerCase()} {profile.firstName.charAt(0).toUpperCase() + profile.firstName.slice(1).toLowerCase()}</h3>}
         </div>
     );
