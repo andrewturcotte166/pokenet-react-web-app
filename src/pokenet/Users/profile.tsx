@@ -209,7 +209,12 @@ function Profile() {
                     </table>
                     {profile.role === "PROFESSOR" ?
                         (<>
-                            <h3>Trainers:</h3>
+                            <h3>Trainers:
+                                <Link to="/Pokenet/Account/Trainers"
+                                    className="btn btn-success ms-2">
+                                    Edit Trainers
+                                </Link>
+                            </h3>
                             {trainers && trainers.map((trainer: any) => (<QuickProfile profile={trainer} />))}
                         </>
                         ) :
