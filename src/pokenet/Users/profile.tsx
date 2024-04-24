@@ -124,7 +124,7 @@ function Profile() {
                             {pokemonList.map((poke: any) => (
                                 <tr key={poke._id} >
                                     <td><img src={poke.animatedSprite ? poke.animatedSprite : poke.sprite} alt="pokemon sprite"></img></td>
-                                    <td>{poke.name}</td>
+                                    <td><Link to={`/Pokenet/Details/${poke.species}`}>{poke.name}</Link></td>
                                     <td>{poke.level}</td>
                                     <td>{poke.gender}</td>
                                     <td>{poke.shiny ? "Yes" : "No"}</td>
