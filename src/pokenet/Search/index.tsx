@@ -66,8 +66,8 @@ function Search() {
     };
     return (
         <div className="p-4">
-            <h1 className="display-3">{`Search results for "${keyword}":`}</h1>
-            <div className="results-container" style={{ overflowY: "auto", maxHeight: "580px" }}>
+            <h1 className="display-5">{`Search results for "${keyword}":`}</h1>
+            <div className="results-container" style={{ overflowY: "auto", maxHeight: "100%" }}>
                 <div className="results-list">
                     {results[0] ? (
                         results.map((result: any, key=result.name) => (
