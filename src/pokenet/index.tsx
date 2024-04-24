@@ -8,6 +8,7 @@ import Home from "./Home";
 import NavBar from "./Home/NavBar";
 import Account from "./Account";
 import PokemonDetails from "./Details/PokemonDetails";
+import Friends from "./Friends";
 const API_BASE = process.env.REACT_APP_API_BASE;
 function Pokenet() {
     const [trainers, setTrainers] = useState<any[]>([]);;
@@ -26,6 +27,7 @@ function Pokenet() {
                 <Route path="Home" element={<Home />} />
                 <Route path="/Account/*" element={<Account />} />
                 <Route path="Search/:keyword/*" element={<Search />} />
+                <Route path="Users/:keyword/*" element={<Friends />} />
                 <Route path="Details/:pokemonName" element={<PokemonDetails />} />
             </Routes>
         </Provider>
