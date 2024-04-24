@@ -35,7 +35,7 @@ function QuickProfile({ profile }: any) {
             <div className="row row-cols-6 card-group">
                 <div className="card text-white text-center bg-dark">
                     <div className="card-body">
-                        <h5 className="card-title"><Link to={`/Pokenet/Account/User/${profile.username}`}> {profile.firstName} {profile.lastName} </Link></h5>
+                        <h5 className="card-title"><Link to={`/Pokenet/Account/Profile/${profile.username}`}> {profile.firstName} {profile.lastName} </Link></h5>
                     </div>
                 </div>
                 {pokemonList.map((poke: any) => (
