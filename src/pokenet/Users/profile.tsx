@@ -1,6 +1,6 @@
 import * as client from "./client";
 import { useState, useEffect } from "react";
-import { useNavigate, } from "react-router-dom";
+import { Link, useNavigate, } from "react-router-dom";
 import { BsTrash3Fill, BsPencilFill } from "react-icons/bs";
 import * as pokeClient from "../Pokemon/client";
 import Pokedex from 'pokedex-promise-v2';
@@ -190,7 +190,7 @@ function Profile() {
                             {pokemonList.map((poke: any) => (
                                 <tr key={poke._id} >
                                     <td><img src={getSprite(poke)} alt="pokemon sprite"></img></td>
-                                    <td>{poke.name}</td>
+                                    <td><Link to={`/Pokenet/Details/${poke.species}`}> {poke.name}</Link></td>
                                     <td>{poke.level}</td>
                                     <td>{poke.gender}</td>
                                     <td>{poke.shiny ? "Yes" : "No"}</td>
