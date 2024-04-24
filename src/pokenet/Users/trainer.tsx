@@ -66,13 +66,8 @@ function Trainer() {
         <div>
             {account && (
                 <div>
-                    {account.role === "PROFESSOR" ? (
-                        <h1>Professor Profile</h1>) :
-                        <h1>Trainer Profile</h1>}
+                    <h1>{account.username.charAt(0).toUpperCase() + account.username.slice(1).toLowerCase()}'s Profile</h1>
                     <h3>Name: {account.firstName}</h3>
-                    <h3>Region: {account.region}</h3>
-                    <h3>Favorite Pokemon: {account.favoritePokemon}</h3>
-                    <h3>Favorite Type: {account.favoriteType}</h3>
                     <table className="table">
                         <thead>
                             <tr>
