@@ -56,7 +56,7 @@ function PokemonDetails() {
     }
 
     if (!pokemon) {
-        return <div>Pokémon not found</div>;
+        return <div>Pokemon not found</div>;
     }
 
     if (!pokemonName) {
@@ -74,7 +74,7 @@ function PokemonDetails() {
     const height = pokemon.height / 10; // decimeters -> meters
     const weight = pokemon.weight / 10; // hectograms -> kilograms
     const pokedexNumber = pokemon.id;
-    const cryUrl = `https://play.pokemonshowdown.com/audio/cries/${pokemonName.toLowerCase()}.mp3`;
+    const cry = pokemon.cries?.latest;
     const abilities = pokemon.abilities.map((ability) => ability.ability.name).join(', ');
     const baseExperience = pokemon.base_experience;
     const handleToggleShiny = () => {
@@ -172,7 +172,7 @@ function PokemonDetails() {
         <div className="p-4">
             <h1 className="display-3">{pokemon.name} (#{pokedexNumber}) 
             <button onClick={handleToggleShiny} style={{ backgroundColor: 'transparent', border: 'none' }}>
-                {isShiny ? <IoMdStar size={80} color="gold" /> : <IoMdStarOutline size={80} color="black" />} 
+                {isShiny ? <IoMdStar size={75} color="gold" /> : <IoMdStarOutline size={75} color="black" />} 
             </button>
             {profile._id && (
                 <BsPlusCircleFill className="ms-2" onClick={() => createPokemon(pokemon)} />
@@ -186,7 +186,7 @@ function PokemonDetails() {
             )}
             <p><strong>Types:</strong> {types}</p>
             <audio controls>
-                <source src={cryUrl} type="audio/mp3" />
+                <source src={cry} type="audio/mp3" />
                 Your browser does not support the audio element.
             </audio>
             <p><strong>Height:</strong> {height} m</p>
