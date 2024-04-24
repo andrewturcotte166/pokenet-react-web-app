@@ -46,6 +46,16 @@ function Search() {
                     setResults([]);
                     console.log(e);
                 }
+                try{
+                    const response = await P.getPokemonSpeciesByName(keyword);
+                    const varieties = response.varieties;
+                    const pokemonNames = varieties.map((variety: any) => variety.pokemon.name);
+                    const pokemonResponses = await Promise.all(pokemonNames.map((name: string) => P.getPokemonByName(name)));
+                    setResults(pokemonResponses);
+                } catch (e) {
+                    setResults([]);
+                    console.log(e);
+                }
             }
         }
     };
@@ -77,8 +87,8 @@ function Search() {
                                     {result.name ? result.name : result.pokemon.name}
                                     {result.sprites && (
                                         <>
-                                            <img src={result.sprites.front_default} alt="pokemon sprite"></img>
-                                            <img src={result.sprites.other.showdown.front_default} alt="animated pokemon sprite"></img>
+                                            <img src={result.sprites.front_default} alt=""></img>
+                                            <img src={result.sprites.other.showdown.front_default} alt=""></img>
                                             </>
                                         )}
                                     </Link>
