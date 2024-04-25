@@ -4,6 +4,7 @@ import * as pokeClient from "../Pokemon/client";
 import { User } from "../Users/client";
 import { Link } from "react-router-dom";
 import Pokedex from 'pokedex-promise-v2';
+import QuickProfile from "../Users/quickProfile";
 
 function TrainerView() {
     const [trainers, setTrainers] = useState<User[]>([]);
@@ -27,42 +28,53 @@ function TrainerView() {
         }));
     };
 
+    const fetchRandomPokemon = async () => {
+        const randomIndex = Math.floor(Math.random() * 905) + 1; // removed gen 9 pokemon because some animated sprites dont work
+        try {
+            const randomPokemon = await P.getPokemonByName(randomIndex);
+            setSpotlightPokemon({
+                name: randomPokemon.name,
+                pokedexNumber: randomPokemon.id,
+                sprite: randomPokemon.sprites.front_default,
+                animatedSprite: randomPokemon.sprites.other.showdown.front_default,
+            });
+        } catch (error) {
+            console.error("Failed to fetch random Pokémon:", error);
+            setSpotlightPokemon(null);
+        }
+    };
+
     const fetchTrainers = async () => {
         const users = await client.findAllUsers();
         setTrainers(users);
         users.forEach((user: User) => fetchPokemon(user));
     };
-    
-    useEffect(() => { 
+
+    useEffect(() => {
         fetchTrainers();
-    }, []);   
-    
+        fetchRandomPokemon();
+    }, []);
+
     return (
         <div>
             <h2>Registered Trainers</h2>
             {trainers.slice(0, 3).map((trainer) => (
-            <div className="row">
-                <div className="row row-cols-6 card-group">
-                    <div className="card text-white bg-dark">
-                        <img src="..." className="card-img-top card-header h-50" alt="trainer" />
-                        <div className="card-body">
-                            <h5 className="card-title"> {trainer.firstName} {trainer.lastName} </h5>
-                        </div>
-                    </div>
-                    {trainersPokemon[trainer._id]?.slice(0,3).map((poke: any) => (
-                            <div className="card border-dark" key={poke.id}>
-                                <img src={poke.animatedSprite || poke.sprite} className="card-img-top card-header h-50" alt={poke.name} style={{ width: '100%', height: '100%' }} />
-                                <div className="card-body">
-                                    <h5 className="card-title">
-                                        <Link to={`/Pokenet/Details/${poke.species}`}>{poke.name}</Link>
-                                    </h5>
-                                </div>
-                            </div>
-                        ))}
+                <div className="mt-2">
+                    <QuickProfile profile={trainer} />
                 </div>
-            </div>
             ))}
             <h2>Pokemon Spotlight</h2>
+            {spotlightPokemon && (
+                <div className="mt-2">
+                    <h1 className="display-5">
+                        <Link to={`/Pokenet/Details/${spotlightPokemon.name}`} style={{ textDecoration: "none", color:"black" }}>
+                        <p style={{ fontSize: 'calc(1.3rem + .6vw)' }}>{spotlightPokemon.name} #{spotlightPokemon.pokedexNumber}</p>
+                        <img src={spotlightPokemon.sprite} alt={spotlightPokemon.name} />
+                        <img src={spotlightPokemon.animatedSprite} alt={`Animated ${spotlightPokemon.name} sprite`} />
+                        </Link>
+                    </h1>
+                </div>
+            )}
         </div>
     );
 }

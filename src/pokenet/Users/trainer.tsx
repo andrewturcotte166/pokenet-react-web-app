@@ -1,6 +1,6 @@
 import * as client from "./client";
 import { useState, useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import * as pokeClient from "../Pokemon/client";
 import Pokedex from 'pokedex-promise-v2';
 import QuickProfile from "./quickProfile";
@@ -43,11 +43,20 @@ function Trainer() {
                 const pokeData = await P.getPokemonByName(poke.species);
                 poke.sprite = pokeData.sprites.front_default;
                 poke.animatedSprite = pokeData.sprites.other.showdown.front_default;
+                poke.shinySprite = pokeData.sprites.front_shiny;
+                poke.shinyAnimatedSprite = pokeData.sprites.other.showdown.front_shiny;
             }
             );
             setPokemonList(pokemonList);
         }
     };
+    const getSprite = (poke: any) => {
+        if (poke.shiny) {
+            return poke.shinyAnimatedSprite ? poke.shinyAnimatedSprite : poke.shinySprite;
+        } else {
+            return poke.animatedSprite ? poke.animatedSprite : poke.sprite;
+        }
+    }
     useEffect(() => {
         fetchProfile();
     }, []);
@@ -66,13 +75,8 @@ function Trainer() {
         <div>
             {account && (
                 <div>
-                    {account.role === "PROFESSOR" ? (
-                        <h1>Professor Profile</h1>) :
-                        <h1>Trainer Profile</h1>}
+                    <h1>{account.username.charAt(0).toUpperCase() + account.username.slice(1).toLowerCase()}'s Profile</h1>
                     <h3>Name: {account.firstName}</h3>
-                    <h3>Region: {account.region}</h3>
-                    <h3>Favorite Pokemon: {account.favoritePokemon}</h3>
-                    <h3>Favorite Type: {account.favoriteType}</h3>
                     <table className="table">
                         <thead>
                             <tr>
@@ -97,7 +101,7 @@ function Trainer() {
                         <tbody>
                             {pokemonList.map((poke: any) => (
                                 <tr key={poke._id} >
-                                    <td><img src={poke.animatedSprite ? poke.animatedSprite : poke.sprite} alt="pokemon sprite"></img></td>
+                                    <td><img src={getSprite(poke)} alt="pokemon sprite"></img></td>
                                     <td>{poke.name}</td>
                                     <td>{poke.level}</td>
                                     <td>{poke.gender}</td>

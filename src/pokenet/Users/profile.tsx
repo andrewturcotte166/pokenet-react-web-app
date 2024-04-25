@@ -1,7 +1,7 @@
 import * as client from "./client";
 import { useState, useEffect } from "react";
 import { Link, useNavigate, } from "react-router-dom";
-import { BsTrash3Fill, } from "react-icons/bs";
+import { BsTrash3Fill, BsPencilFill } from "react-icons/bs";
 import * as pokeClient from "../Pokemon/client";
 import Pokedex from 'pokedex-promise-v2';
 import QuickProfile from "./quickProfile";
@@ -46,14 +46,19 @@ function Profile() {
                 const pokeData = await P.getPokemonByName(poke.species);
                 poke.sprite = pokeData.sprites.front_default;
                 poke.animatedSprite = pokeData.sprites.other.showdown.front_default;
+                poke.shinySprite = pokeData.sprites.front_shiny;
+                poke.shinyAnimatedSprite = pokeData.sprites.other.showdown.front_shiny;
             }
             );
             setPokemonList(pokemonList);
         }
     };
-    // use this for updating profile attributes (not including team)
     const save = async () => {
         await client.updateUser(profile);
+    };
+    const updatePokemon = async () => {
+        await pokeClient.updatePokemon(pokemon);
+        setPokemonList(pokemonList.map((p) => (p._id === pokemon._id ? pokemon : p)));
     };
     const signout = async () => {
         await client.signout();
@@ -67,8 +72,16 @@ function Profile() {
             console.log(err);
         }
     };
+    const getSprite = (poke: any) => {
+        if (poke.shiny) {
+            return poke.shinyAnimatedSprite ? poke.shinyAnimatedSprite : poke.shinySprite;
+        } else {
+            return poke.animatedSprite ? poke.animatedSprite : poke.sprite;
+        }
+    }
     useEffect(() => {
         fetchProfile();
+        console.log(profile)
     }, []);
     useEffect(() => {
         fetchPokemon();
@@ -83,12 +96,51 @@ function Profile() {
         <div>
             {profile && (
                 <div>
-                    <h1>My Profile</h1>
-                    <h3>First Name: {profile.firstName}</h3>
-                    <h3>Last Name: {profile.lastName}</h3>
-                    <h3>Region: {profile.region}</h3>
-                    <h3>Favorite Pokemon: {profile.favoritePokemon}</h3>
-                    <h3>Favorite Type: {profile.favoriteType}</h3>
+                    <h1>My {profile.role.charAt(0) + profile.role.slice(1).toLowerCase()} Profile
+                        <button className="btn btn-primary ms-2" onClick={save}>
+                            Save
+                        </button>
+                    </h1>
+                    <label>
+                        <h4>
+                            Username: {profile.username}
+                        </h4>
+                    </label><br />
+                    <label>
+                        <h4>
+                            Password:
+                            <input value={profile.password} type="Password" className="ms-2" placeholder="Ketchum" onChange={(e) =>
+                                setProfile({ ...profile, password: e.target.value })} />
+                        </h4>
+                    </label><br />
+                    <label>
+                        <h4>
+                            First Name:
+                            <input value={profile.firstName} className="ms-2" placeholder="Ash" onChange={(e) =>
+                                setProfile({ ...profile, firstName: e.target.value })} />
+                        </h4>
+                    </label><br />
+                    <label>
+                        <h4>
+                            Last Name:
+                            <input value={profile.lastName} className="ms-2" placeholder="Ketchum" onChange={(e) =>
+                                setProfile({ ...profile, lastName: e.target.value })} />
+                        </h4>
+                    </label><br />
+                    <label>
+                        <h4>
+                            Email:
+                            <input value={profile.email} className="ms-2" placeholder="user@email.com" onChange={(e) =>
+                                setProfile({ ...profile, email: e.target.value })} />
+                        </h4>
+                    </label><br />
+                    <label>
+                        <h4>
+                            Date of Birth:
+                            <input value={profile.dob && profile.dob.split("T")[0]} type="Date" className="ms-2" onChange={(e) =>
+                                setProfile({ ...profile, dob: e.target.value })} />
+                        </h4>
+                    </label><br />
                     <table className="table">
                         <thead>
                             <tr>
@@ -96,26 +148,40 @@ function Profile() {
                                     <h3>Team: </h3>
                                 </td>
                                 <td>
-                                    <input value={pokemon.name} placeholder="pokemon name" onChange={(e) =>
-                                        setPokemon({ ...pokemon, name: e.target.value })} />
+                                    <label>
+                                        Nickname:
+                                        <input value={pokemon.name} className="ms-2" placeholder="pokemon name" onChange={(e) =>
+                                            setPokemon({ ...pokemon, name: e.target.value })} />
+                                    </label>
                                 </td>
                                 <td>
-                                    <input value={pokemon.level} placeholder="pokemon level" type="number" title="1 to 100" onChange={(e) =>
-                                        setPokemon({ ...pokemon, level: parseInt(e.target.value) })} />
+                                    <label>
+                                        Level:
+                                        <input value={pokemon.level} className="ms-2" placeholder="pokemon level" type="number" max="100" min="1" title="1 to 100" onChange={(e) =>
+                                            setPokemon({ ...pokemon, level: parseInt(e.target.value) })} />
+                                    </label>
                                 </td>
                                 <td>
-                                    <select value={pokemon.gender} onChange={(e) =>
-                                        setPokemon({ ...pokemon, gender: e.target.value })}>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Genderless">Genderless</option>
-                                    </select>
+                                    <label>
+                                        Gender:
+                                        <select value={pokemon.gender} className="ms-2" onChange={(e) =>
+                                            setPokemon({ ...pokemon, gender: e.target.value })}>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                            <option value="Genderless">Genderless</option>
+                                        </select>
+                                    </label>
                                 </td>
                                 <td>
                                     <label> Shiny?
-                                        <input checked={pokemon.shiny} type="checkbox" onChange={(e) =>
+                                        <input checked={pokemon.shiny} className="ms-2" type="checkbox" onChange={(e) =>
                                             setPokemon({ ...pokemon, shiny: e.target.checked })} />
                                     </label>
+                                </td>
+                                <td>
+                                    <button className="btn btn-warning" onClick={() => updatePokemon()}>
+                                        Update
+                                    </button>
                                 </td>
                                 <th>&nbsp;</th>
                             </tr>
@@ -123,11 +189,16 @@ function Profile() {
                         <tbody>
                             {pokemonList.map((poke: any) => (
                                 <tr key={poke._id} >
-                                    <td><img src={poke.animatedSprite ? poke.animatedSprite : poke.sprite} alt="pokemon sprite"></img></td>
-                                    <td><Link to={`/Pokenet/Details/${poke.species}`}>{poke.name}</Link></td>
+                                    <td><img src={getSprite(poke)} alt="pokemon sprite"></img></td>
+                                    <td><Link to={`/Pokenet/Details/${poke.species}`}> {poke.name}</Link></td>
                                     <td>{poke.level}</td>
                                     <td>{poke.gender}</td>
                                     <td>{poke.shiny ? "Yes" : "No"}</td>
+                                    <td>
+                                        <button onClick={() => setPokemon(poke)}>
+                                            <BsPencilFill />
+                                        </button>
+                                    </td>
                                     <td>
                                         <button onClick={() => deletePokemon(poke)}>
                                             <BsTrash3Fill />
@@ -136,10 +207,14 @@ function Profile() {
                                 </tr>))}
                         </tbody>
                     </table>
-                    {/* TODO: refactor to use a shared component that displays friend/professor/trainer information */}
                     {profile.role === "PROFESSOR" ?
                         (<>
-                            <h3>Trainers:</h3>
+                            <h3>Trainers:
+                                <Link to="/Pokenet/Account/Trainers"
+                                    className="btn btn-success ms-2">
+                                    Edit Trainers
+                                </Link>
+                            </h3>
                             {trainers && trainers.map((trainer: any) => (<QuickProfile profile={trainer} />))}
                         </>
                         ) :

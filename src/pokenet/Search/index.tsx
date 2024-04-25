@@ -76,14 +76,14 @@ function Search() {
     };
     return (
         <div className="p-4">
-            <h1>{`Search results for "${keyword}":`}</h1>
-            <div className="results-container" style={{ overflowY: "scroll", maxHeight: "580px" }}>
+            <h1 className="display-5">{`Search results for "${keyword}":`}</h1>
+            <div className="results-container" style={{ overflowY: "auto", maxHeight: "100%" }}>
                 <div className="results-list">
                     {results[0] ? (
                         results.map((result: any, key=result.name) => (
                             <div className="result-item">
                                 <h3>
-                                    <Link to={`/Pokenet/Details/${result.name}`}>
+                                    <Link to={`/Pokenet/Details/${result.name}`} style={{ color:"black" }}>
                                     {result.name ? result.name : result.pokemon.name}
                                     {result.sprites && (
                                         <>
