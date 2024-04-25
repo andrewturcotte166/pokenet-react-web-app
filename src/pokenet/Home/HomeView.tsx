@@ -28,6 +28,22 @@ function TrainerView() {
         }));
     };
 
+    const fetchRandomPokemon = async () => {
+        const randomIndex = Math.floor(Math.random() * 905) + 1; // removed gen 9 pokemon because some animated sprites dont work
+        try {
+            const randomPokemon = await P.getPokemonByName(randomIndex);
+            setSpotlightPokemon({
+                name: randomPokemon.name,
+                pokedexNumber: randomPokemon.id,
+                sprite: randomPokemon.sprites.front_default,
+                animatedSprite: randomPokemon.sprites.other.showdown.front_default,
+            });
+        } catch (error) {
+            console.error("Failed to fetch random Pokémon:", error);
+            setSpotlightPokemon(null);
+        }
+    };
+
     const fetchTrainers = async () => {
         const users = await client.findAllUsers();
         setTrainers(users);
@@ -36,6 +52,7 @@ function TrainerView() {
 
     useEffect(() => {
         fetchTrainers();
+        fetchRandomPokemon();
     }, []);
 
     return (
@@ -47,6 +64,17 @@ function TrainerView() {
                 </div>
             ))}
             <h2>Pokemon Spotlight</h2>
+            {spotlightPokemon && (
+                <div className="mt-2">
+                    <h1 className="display-5">
+                        <Link to={`/Pokenet/Details/${spotlightPokemon.name}`} style={{ textDecoration: "none", color:"black" }}>
+                        <p style={{ fontSize: 'calc(1.3rem + .6vw)' }}>{spotlightPokemon.name} #{spotlightPokemon.pokedexNumber}</p>
+                        <img src={spotlightPokemon.sprite} alt={spotlightPokemon.name} />
+                        <img src={spotlightPokemon.animatedSprite} alt={`Animated ${spotlightPokemon.name} sprite`} />
+                        </Link>
+                    </h1>
+                </div>
+            )}
         </div>
     );
 }
