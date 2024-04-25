@@ -4,11 +4,15 @@ import * as friendClient from "../Friends/client";
 import HomeView from "./HomeView";
 import { Link, } from "react-router-dom";
 import Pokedex from 'pokedex-promise-v2';
+import QuickProfile from "../Users/quickProfile";
 
 function Home() {
     const [profile, setProfile] = useState<any>();
     const [spotlightPokemon, setSpotlightPokemon] = useState<any>([]);
+    const [friends, setFriends] = useState<any>();
+    const [friendsProfiles, setFriendsProfiles] = useState<any>();
     const P = new Pokedex();
+
     const fetchRandomPokemon = async () => {
         const randomIndex = Math.floor(Math.random() * 905) + 1;
         try {
@@ -24,6 +28,7 @@ function Home() {
             setSpotlightPokemon(null);
         }
     };
+
     const fetchProfile = async () => {
         try {
             const account = await client.profile();
@@ -33,32 +38,41 @@ function Home() {
         }
     };
 
-    const fetchFriends = async () => {
-        if (profile && profile._id) {
-            try {
-                console.log(profile.username)
-                const friends = await friendClient.findFriendshipByUser(profile.username);
-                setFriends(friends);
-                console.log(friends);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-    }
-
-    const findProfile = async () => {
-        try {
-            const userProfiles = await Promise.all(friends.map((friend: any) => client.findUserByUsername(friend.friendName)));
-            setFriendsProfiles(userProfiles);
-        } catch (error) {
-            console.log("profile not found");
-        }
-    }
-
     useEffect(() => {
         fetchProfile();
+    }, []);
+
+    useEffect(() => {
+        const fetchFriends = async () => {
+            if (profile) {
+                try {
+                    const friends = await friendClient.findFriendshipByUser(profile.username);
+                    setFriends(friends);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        }
+
         fetchFriends();
+    }, [profile]);
+
+    useEffect(() => {
+        const findProfile = async () => {
+            if (friends && friends.length > 0) {
+                try {
+                    const userProfiles = await Promise.all(friends.map((friend: any) => client.findUserByUsername(friend.friendName)));
+                    setFriendsProfiles(userProfiles);
+                } catch (error) {
+                    console.log("Profile not found");
+                }
+            }
+        }
+
         findProfile();
+    }, [friends]);
+
+    useEffect(() => {
         fetchRandomPokemon();
     }, []);
 
@@ -74,7 +88,6 @@ function Home() {
                         <li>Find more information about your favorite Pokemon!</li>
                     </ul>
                 </div>
-
                 <div className="mt-2">
                     <h2>Pokemon Spotlight</h2>
                     {spotlightPokemon && (
@@ -101,4 +114,5 @@ function Home() {
         </div>
     );
 }
+
 export default Home;

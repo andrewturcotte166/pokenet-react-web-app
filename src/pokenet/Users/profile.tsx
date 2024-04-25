@@ -39,29 +39,43 @@ function Profile() {
             const account = await client.profile();
             setProfile(account);
         } catch (error) {
-            navigate("/Pokenet/Account/Login");
+            console.log("Not logged in")
         }
     };
 
-    const fetchFriends = async () => {
-        if (profile && profile.username) {
-            try {
-                const friends = await friendClient.findFriendshipByUser(profile.username);
-                setFriends(friends);
-            } catch (error) {
-                console.log(error);
+    useEffect(() => {
+        fetchProfile();
+    }, []);
+
+    useEffect(() => {
+        const fetchFriends = async () => {
+            if (profile) {
+                try {
+                    const friends = await friendClient.findFriendshipByUser(profile.username);
+                    setFriends(friends);
+                } catch (error) {
+                    console.log(error);
+                }
             }
         }
-    }
 
-    const findProfile = async () => {
-        try {
-            const userProfiles = await Promise.all(friends.map((friend: any) => client.findUserByUsername(friend.friendName)));
-            setFriendsProfiles(userProfiles);
-        } catch (error) {
-            console.log("Friend profiles not found");
+        fetchFriends();
+    }, [profile]);
+
+    useEffect(() => {
+        const findProfile = async () => {
+            if (friends && friends.length > 0) {
+                try {
+                    const userProfiles = await Promise.all(friends.map((friend: any) => client.findUserByUsername(friend.friendName)));
+                    setFriendsProfiles(userProfiles);
+                } catch (error) {
+                    console.log("Profile not found");
+                }
+            }
         }
-    }
+
+        findProfile();
+    }, [friends]);
 
     const fetchPokemon = async () => {
         if (profile && profile._id) {
@@ -103,14 +117,9 @@ function Profile() {
             return poke.animatedSprite ? poke.animatedSprite : poke.sprite;
         }
     }
-    useEffect(() => {
-        fetchFriends();
-        fetchProfile();
-    }, []);
 
     useEffect(() => {
         fetchPokemon();
-        findProfile();
         if (profile && profile.role === "TRAINER" && profile.professorId) {
             fetchProfessor();
         }
