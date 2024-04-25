@@ -54,6 +54,9 @@ function PokemonDetails() {
             allPokemon = allPokemon.filter((poke: any) => poke.species === pokemonName);
             const owners = allPokemon.map((poke: any) => poke.userId);
             setOwners(owners);
+            if (owners.length === 0) {
+                return
+            }
             const randomIndex = Math.floor(Math.random() * owners.length);
             const owner = await userClient.findUserById(owners[randomIndex]);
             setOwner(owner);

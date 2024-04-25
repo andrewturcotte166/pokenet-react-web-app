@@ -268,6 +268,7 @@ function Profile() {
                             <QuickProfile profile={friendProfile} />
                         </div>
                     ))}
+                    {!friendsProfiles && (<h4>No friends yet, add some <Link to={`/Pokenet/Users/Search`}> here</Link>!</h4>)}
                     <button className="btn btn-danger" onClick={signout}>
                         Signout
                     </button>
