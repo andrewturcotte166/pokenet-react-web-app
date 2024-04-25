@@ -8,17 +8,20 @@ function QuickProfile({ profile }: any) {
     const fetchPokemon = async () => {
         if (profile && profile._id) {
             const pokemonList = await pokeClient.findPokemonByUser(profile);
-            pokemonList.map(async (poke: any) => {
+            const updatedPokemonList = await Promise.all(pokemonList.map(async (poke: any) => {
                 const pokeData = await P.getPokemonByName(poke.species);
-                poke.sprite = pokeData.sprites.front_default;
-                poke.animatedSprite = pokeData.sprites.other.showdown.front_default;
-                poke.shinySprite = pokeData.sprites.front_shiny;
-                poke.shinyAnimatedSprite = pokeData.sprites.other.showdown.front_shiny;
-            }
-            );
-            setPokemonList(pokemonList);
+                return {
+                    ...poke,
+                    sprite: pokeData.sprites.front_default,
+                    animatedSprite: pokeData.sprites.other.showdown.front_default,
+                    shinySprite: pokeData.sprites.front_shiny,
+                    shinyAnimatedSprite: pokeData.sprites.other.showdown.front_shiny,
+                };
+            }));
+            setPokemonList(updatedPokemonList);
         }
     };
+    
     const getSprite = (poke: any) => {
         if (poke.shiny) {
             return poke.shinyAnimatedSprite ? poke.shinyAnimatedSprite : poke.shinySprite;
@@ -28,7 +31,8 @@ function QuickProfile({ profile }: any) {
     }
     useEffect(() => {
         fetchPokemon();
-    }, []);
+    }, [profile]); // Rerun fetchPokemon when `profile` changes
+    
     console.log(profile)
     return (
         <div className="row">
