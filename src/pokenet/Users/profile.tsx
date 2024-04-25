@@ -56,14 +56,14 @@ function Profile() {
         }
     }
 
-    // const findProfile = async (profile: any) => {
-    //     try {
-    //        const account = await client.findUserByUsername(profile.username);
-    //        setFriendsProfiles(account);
-    //     } catch (error) {
-    //         console.log("profile not found");
-    //     }
-    // }
+    const findProfile = async () => {
+        try {
+            const userProfiles = await Promise.all(friends.map((friend: any) => client.findUserByUsername(friend.friendName)));
+            setFriendsProfiles(userProfiles);
+        } catch (error) {
+            console.log("profile not found");
+        }
+    }
 
     const fetchPokemon = async () => {
         if (profile && profile._id) {
@@ -106,9 +106,11 @@ function Profile() {
         }
     }
     useEffect(() => {
-        fetchProfile();
         fetchFriends();
+        fetchProfile();
+        findProfile();
     }, []);
+
     useEffect(() => {
         fetchPokemon();
         if (profile && profile.role === "TRAINER" && profile.professorId) {
@@ -252,8 +254,8 @@ function Profile() {
                         </>
                         )}
                     <h3>Friends:</h3>
-                    {friends && friends.map((friend: any) => (
-                        <div>{friend.firstName}</div>
+                    {friendsProfiles && friendsProfiles.map((friendProfile: any) => (
+                        <QuickProfile profile={friendProfile} />
                     ))}
                     <button className="btn btn-danger" onClick={signout}>
                         Signout

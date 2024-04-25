@@ -48,7 +48,6 @@ function Friends() {
     }, []); 
     return (
         <div className="p-4">
-            <h2>Friends</h2>
             <h2>Find Friends</h2>
             <table>
                 <thead>
