@@ -76,7 +76,7 @@ function Trainer() {
             {account && (
                 <div>
                     <h1>{account.username.charAt(0).toUpperCase() + account.username.slice(1).toLowerCase()}'s Profile</h1>
-                    <h3>Name: {account.firstName}</h3>
+                    <h3>Name: {account.firstName} {account.lastName}</h3>
                     <table className="table">
                         <thead>
                             <tr>

@@ -30,6 +30,10 @@ export const findUserByUsername = async (username: any) => {
     const response = await api.get(`${USERS_API}/${username}`);
     return response.data;
 };
+export const findUserById = async (userId: any) => {
+    const response = await api.get(`${USERS_API}/id/${userId}`);
+    return response.data;
+};
 export const findUsersByProfessor = async (professorId: any) => {
     const response = await api.get(`${USERS_API}/professor/${professorId}`);
     return response.data;
