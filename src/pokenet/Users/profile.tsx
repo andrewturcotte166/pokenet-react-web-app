@@ -10,6 +10,7 @@ const P = new Pokedex();
 function Profile() {
     const [profile, setProfile] = useState<any>();
     const [friends, setFriends] = useState<any>();
+    const [friendsProfiles, setFriendsProfiles] = useState<any>();
     const [pokemonList, setPokemonList] = useState<any[]>([]);
     const [pokemon, setPokemon] = useState<any>({
         _id: "", userId: "", species: "", name: "", gender: "", level: 50, shiny: false,
@@ -45,7 +46,8 @@ function Profile() {
     const fetchFriends = async () => {
         if (profile && profile._id) {
             try {
-                const friends = await friendClient.findFriendshipByUser(profile);
+                console.log(profile.username)
+                const friends = await friendClient.findFriendshipByUser(profile.username);
                 setFriends(friends);
                 console.log(friends);
             } catch (error) {
@@ -53,6 +55,15 @@ function Profile() {
             }
         }
     }
+
+    // const findProfile = async (profile: any) => {
+    //     try {
+    //        const account = await client.findUserByUsername(profile.username);
+    //        setFriendsProfiles(account);
+    //     } catch (error) {
+    //         console.log("profile not found");
+    //     }
+    // }
 
     const fetchPokemon = async () => {
         if (profile && profile._id) {
@@ -95,8 +106,8 @@ function Profile() {
         }
     }
     useEffect(() => {
-        fetchFriends();
         fetchProfile();
+        fetchFriends();
     }, []);
     useEffect(() => {
         fetchPokemon();
@@ -248,7 +259,6 @@ function Profile() {
                         Signout
                     </button>
                 </div>
-
             )}
         </div>
     );

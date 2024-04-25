@@ -20,8 +20,7 @@ function Friends() {
 
     const fetchFriends = async () => {
         try {
-            //const friendships = await client.findFriendshipByUser(profile);
-            const friendships = await client.findAllFriendships();
+            const friendships = await client.findFriendshipByUser(profile.username);
             setFriends(friendships);
         } catch (error) {
             console.log("Friendships not found")
@@ -33,9 +32,9 @@ function Friends() {
         setTrainers(users);
     }
 
-    const addFriend = async (trainer: User) => {
+    const addFriend = async (username: string) => {
         try {
-            await client.createFriend({userId: profile._id, friendId: trainer._id});
+            await client.createFriend({userName: profile.username, friendName: username});
             fetchFriends();
         } catch (error) {
             console.log(error);
@@ -47,7 +46,6 @@ function Friends() {
         fetchProfile();
         fetchFriends();
     }, []); 
-    console.log(friends);
     return (
         <div className="p-4">
             <h2>Friends</h2>
@@ -65,7 +63,7 @@ function Friends() {
                             <td>{trainer.firstName} {trainer.lastName}</td>
                             <td>{trainer.role}</td>
                             {profile._id && (
-                                <BsPlusCircleFill className="ms-2" onClick={() => addFriend(trainer)} />
+                                <BsPlusCircleFill className="ms-2" onClick={() => addFriend(trainer.username)} />
                             )}
                         </tr>
                     ))}
