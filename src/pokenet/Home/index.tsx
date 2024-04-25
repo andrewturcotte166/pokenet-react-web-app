@@ -44,7 +44,7 @@ function Home() {
         fetchProfile();
         fetchFriends();
         findProfile();
-    }, [fetchFriends]);
+    }, []);
 
     return (
         <div className="p-4">
