@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Pokedex, { Pokemon } from 'pokedex-promise-v2';
 import { User } from '../Users/client';
 import * as pokeClient from "../Pokemon/client";
@@ -12,6 +12,8 @@ const P = new Pokedex();
 function PokemonDetails() {
     const { pokemonName } = useParams<{ pokemonName?: string }>();
     const [pokemon, setPokemon] = useState<Pokemon | null>(null);
+    const [owners, setOwners] = useState<String[]>([]);
+    const [owner, setOwner] = useState<any>();
     const [isLoading, setIsLoading] = useState(true);
     const [isShiny, setIsShiny] = useState(false);
     const [profile, setProfile] = useState<User>({
@@ -19,7 +21,6 @@ function PokemonDetails() {
         firstName: "", lastName: "", dob: "", email: "", role: "USER"
     });
     
-
     const fetchPokemonDetails = async () => {
         if (pokemonName) {
             setIsLoading(true);
@@ -37,6 +38,7 @@ function PokemonDetails() {
             setIsLoading(false);
         }
     };
+
     const fetchProfile = async () => {
         try {
             const account = await userClient.profile();
@@ -46,9 +48,24 @@ function PokemonDetails() {
         }
     };
 
+    const fetchOwners = async () => {
+        try {
+            let allPokemon = await pokeClient.findAllPokemon();
+            allPokemon = allPokemon.filter((poke: any) => poke.species === pokemonName);
+            const owners = allPokemon.map((poke: any) => poke.userId);
+            setOwners(owners);
+            const randomIndex = Math.floor(Math.random() * owners.length);
+            const owner = await userClient.findUserById(owners[randomIndex]);
+            setOwner(owner);
+        } catch (error) {
+            return
+        }
+    };
+
     useEffect(() => {
         fetchPokemonDetails();
         fetchProfile();
+        fetchOwners();
     }, [pokemonName]);
 
     if (isLoading) {
@@ -178,6 +195,8 @@ function PokemonDetails() {
                 <BsPlusCircleFill className="ms-2" onClick={() => createPokemon(pokemon)} />
             )}
             </h1>
+            {profile._id && owner && (<h3>Other's have this pokemon, like <Link to={`/Pokenet/Account/Profile/${owner.username}`}> {owner.firstName} {owner.lastName} </Link></h3>)}
+            {!profile._id && (<h3><Link to={`/Pokenet/Account/Login`}> Login</Link> to see who else has {pokemonName}</h3>)}
             {frontSprite && (
                 <img src={frontSprite} alt={`${pokemon.name} sprite`} />
             )}
