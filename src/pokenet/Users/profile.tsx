@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, } from "react-router-dom";
 import { BsTrash3Fill, BsPencilFill } from "react-icons/bs";
 import * as pokeClient from "../Pokemon/client";
+import * as friendClient from "../Friends/client";
 import Pokedex from 'pokedex-promise-v2';
 import QuickProfile from "./quickProfile";
 const P = new Pokedex();
 function Profile() {
     const [profile, setProfile] = useState<any>();
+    const [friends, setFriends] = useState<any>();
     const [pokemonList, setPokemonList] = useState<any[]>([]);
     const [pokemon, setPokemon] = useState<any>({
         _id: "", userId: "", species: "", name: "", gender: "", level: 50, shiny: false,
@@ -39,6 +41,19 @@ function Profile() {
             navigate("/Pokenet/Account/Login");
         }
     };
+
+    const fetchFriends = async () => {
+        if (profile && profile._id) {
+            try {
+                const friends = await friendClient.findFriendshipByUser(profile);
+                setFriends(friends);
+                console.log(friends);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+
     const fetchPokemon = async () => {
         if (profile && profile._id) {
             const pokemonList = await pokeClient.findPokemonByUser(profile);
@@ -80,8 +95,8 @@ function Profile() {
         }
     }
     useEffect(() => {
+        fetchFriends();
         fetchProfile();
-        console.log(profile)
     }, []);
     useEffect(() => {
         fetchPokemon();
@@ -226,6 +241,9 @@ function Profile() {
                         </>
                         )}
                     <h3>Friends:</h3>
+                    {friends && friends.map((friend: any) => (
+                        <div>{friend.firstName}</div>
+                    ))}
                     <button className="btn btn-danger" onClick={signout}>
                         Signout
                     </button>

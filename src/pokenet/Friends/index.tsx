@@ -49,7 +49,7 @@ function Friends() {
     }, []); 
     console.log(friends);
     return (
-        <div>
+        <div className="p-4">
             <h2>Friends</h2>
             <h2>Find Friends</h2>
             <table>
