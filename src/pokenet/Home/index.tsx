@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import * as client from "../Users/client";
+import * as friendClient from "../Friends/client";
 import HomeView from "./HomeView";
 import { Link, } from "react-router-dom";
 import Pokedex from 'pokedex-promise-v2';
@@ -32,8 +33,32 @@ function Home() {
         }
     };
 
+    const fetchFriends = async () => {
+        if (profile && profile._id) {
+            try {
+                console.log(profile.username)
+                const friends = await friendClient.findFriendshipByUser(profile.username);
+                setFriends(friends);
+                console.log(friends);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+
+    const findProfile = async () => {
+        try {
+            const userProfiles = await Promise.all(friends.map((friend: any) => client.findUserByUsername(friend.friendName)));
+            setFriendsProfiles(userProfiles);
+        } catch (error) {
+            console.log("profile not found");
+        }
+    }
+
     useEffect(() => {
         fetchProfile();
+        fetchFriends();
+        findProfile();
         fetchRandomPokemon();
     }, []);
 
@@ -65,8 +90,14 @@ function Home() {
                     )}
                 </div>
             </div>
-            {!profile && <HomeView />}
-            {profile && <h3>Welcome, {profile.role.charAt(0) + profile.role.slice(1).toLowerCase()} {profile.firstName.charAt(0).toUpperCase() + profile.firstName.slice(1).toLowerCase()}</h3>}
+            {!profile ? (<HomeView />) : (<>
+                <h3>Friends:</h3>
+                {friendsProfiles && friendsProfiles.map((friendProfile: any) => (
+                    <div className="mb-2">
+                        <QuickProfile profile={friendProfile} />
+                    </div>
+                ))}
+            </>)}
         </div>
     );
 }

@@ -3,11 +3,14 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, } from "react-router-dom";
 import { BsTrash3Fill, BsPencilFill } from "react-icons/bs";
 import * as pokeClient from "../Pokemon/client";
+import * as friendClient from "../Friends/client";
 import Pokedex from 'pokedex-promise-v2';
 import QuickProfile from "./quickProfile";
 const P = new Pokedex();
 function Profile() {
     const [profile, setProfile] = useState<any>();
+    const [friends, setFriends] = useState<any>();
+    const [friendsProfiles, setFriendsProfiles] = useState<any>();
     const [pokemonList, setPokemonList] = useState<any[]>([]);
     const [pokemon, setPokemon] = useState<any>({
         _id: "", userId: "", species: "", name: "", gender: "", level: 50, shiny: false,
@@ -39,6 +42,27 @@ function Profile() {
             navigate("/Pokenet/Account/Login");
         }
     };
+
+    const fetchFriends = async () => {
+        if (profile && profile.username) {
+            try {
+                const friends = await friendClient.findFriendshipByUser(profile.username);
+                setFriends(friends);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+
+    const findProfile = async () => {
+        try {
+            const userProfiles = await Promise.all(friends.map((friend: any) => client.findUserByUsername(friend.friendName)));
+            setFriendsProfiles(userProfiles);
+        } catch (error) {
+            console.log("Friend profiles not found");
+        }
+    }
+
     const fetchPokemon = async () => {
         if (profile && profile._id) {
             const pokemonList = await pokeClient.findPokemonByUser(profile);
@@ -80,18 +104,20 @@ function Profile() {
         }
     }
     useEffect(() => {
+        fetchFriends();
         fetchProfile();
-        console.log(profile)
     }, []);
+
     useEffect(() => {
         fetchPokemon();
+        findProfile();
         if (profile && profile.role === "TRAINER" && profile.professorId) {
             fetchProfessor();
         }
         if (profile && profile.role === "PROFESSOR") {
             fetchTrainers();
         }
-    }, [profile]);
+    }, [profile, friends,]);
     return (
         <div>
             {profile && (
@@ -215,7 +241,9 @@ function Profile() {
                                     Edit Trainers
                                 </Link>
                             </h3>
-                            {trainers && trainers.map((trainer: any) => (<QuickProfile profile={trainer} />))}
+                            {trainers && trainers.map((trainer: any) => (
+                                <div className="mb-2">
+                                    <QuickProfile profile={trainer} /></div>))}
                         </>
                         ) :
                         (<>
@@ -225,12 +253,16 @@ function Profile() {
                                 (<h4>No professor</h4>)}
                         </>
                         )}
-                    <h3>Friends:</h3>
+                    <h3 className="mt-2">Friends:</h3>
+                    {friendsProfiles && friendsProfiles.map((friendProfile: any) => (
+                        <div className="mb-2">
+                            <QuickProfile profile={friendProfile} />
+                        </div>
+                    ))}
                     <button className="btn btn-danger" onClick={signout}>
                         Signout
                     </button>
                 </div>
-
             )}
         </div>
     );

@@ -30,6 +30,9 @@ function NavBar() {
                         <Link to={`/Pokenet/Account/Profile`} className="nav-link"> Profile </Link>
                     </li>
                     <li className="nav-item">
+                        <Link to={`/Pokenet/Users/Search`} className="nav-link"> Find Friends </Link>
+                    </li>
+                    <li className="nav-item">
                         <Link to={`/Pokenet/`} onClick={() => client.signout()} className="nav-link"> Signout </Link>
                     </li>
                 </ul>
