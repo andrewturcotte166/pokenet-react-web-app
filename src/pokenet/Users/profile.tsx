@@ -106,7 +106,7 @@ function Profile() {
     useEffect(() => {
         fetchFriends();
         fetchProfile();
-    }, []);
+    }, [fetchFriends]);
 
     useEffect(() => {
         fetchPokemon();

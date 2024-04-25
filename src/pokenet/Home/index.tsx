@@ -44,9 +44,9 @@ function Home() {
         fetchProfile();
         fetchFriends();
         findProfile();
-    }, []); 
+    }, [fetchFriends]);
 
-    return(
+    return (
         <div className="p-4">
             <h1 className="display-4">Welcome to Pokenet!</h1>
             <p className="lead">This is a social network for Pokemon fans where you can:</p>
@@ -55,12 +55,14 @@ function Home() {
                 <li>Connect with Friends and Professors!</li>
                 <li>Find more information about your favorite Pokemon!</li>
             </ul>
-            {!profile && <HomeView/>}
-            {profile && <h3>Welcome, {profile.role.charAt(0) + profile.role.slice(1).toLowerCase()} {profile.firstName.charAt(0).toUpperCase() + profile.firstName.slice(1).toLowerCase()}</h3>}
-            <h3>Friends:</h3>
-                    {friendsProfiles && friendsProfiles.map((friendProfile: any) => (
+            {!profile ? (<HomeView />) : (<>
+                <h3>Friends:</h3>
+                {friendsProfiles && friendsProfiles.map((friendProfile: any) => (
+                    <div className="mb-2">
                         <QuickProfile profile={friendProfile} />
-                    ))}
+                    </div>
+                ))}
+            </>)}
         </div>
     );
 }
