@@ -1,0 +1,24 @@
+.navbar {
+    background: linear-gradient(to bottom, red 50%, black 50%, black 51%, white 51%);
+    border: 1px solid black; /* Adds a thin black border */
+    padding: 10px 0;
+}
+
+.navbar .nav-link, .navbar .navbar-brand {
+    color: black !important; /* Forces text color to black, overriding other styles */
+    font-weight: bold; /* Makes text bold */
+}
+
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.centered-link {
+    background-color: white;
+    border: 2px solid black;
+    padding: 5px 10px; /* Adjust padding based on your design needs */
+    margin: 0 20px; /* Provide some margin if needed */
+    border-radius: 5px; /* Optional: add border-radius for rounded corners */
+}

@@ -1,0 +1,41 @@
+.profile-container {
+    display: flex;
+    align-items: stretch; /* This ensures children of this container stretch to fill the container height */
+}
+
+.profile-info {
+    flex: 0 0 200px; /* Fixed width for profile information */
+    margin-right: 20px; /* Space between profile info and cards */
+    display: flex; /* Makes direct children also flex items, which allows more control over vertical stretching */
+    flex-direction: column; /* Stack children vertically */
+}
+
+.profile-info .card {
+    flex-grow: 1; /* Allows the card to expand to fill the available vertical space */
+    display: flex; /* Needed to correctly align the card-body vertically */
+    flex-direction: column;
+}
+
+.profile-info .card-body {
+    flex-grow: 1; /* Stretches the body to take up all available space, aligning content as needed */
+    display: flex;
+    align-items: center; /* Centers content vertically */
+    justify-content: center; /* Centers content horizontally */
+}
+
+.pokemon-card-container {
+    flex-grow: 1; /* Take up the rest of the horizontal space */
+    overflow-x: auto; /* Allow horizontal scrolling */
+}
+
+.scrollable-container {
+    display: flex;
+    gap: 10px; /* Spacing between cards */
+    align-items: center; /* Aligns cards vertically in the middle */
+}
+
+.pokemon-card {
+    flex: 0 0 auto; /* Do not grow, do not shrink, but maintain auto width */
+    width: 200px; /* Fixed width for each card */
+    height: auto; /* Ensures that the card height adjusts based on content */
+}

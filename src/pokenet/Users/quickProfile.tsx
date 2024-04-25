@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, } from "react-router-dom";
+import "./quickProfile.css";
 import * as pokeClient from "../Pokemon/client";
 import Pokedex from 'pokedex-promise-v2';
 const P = new Pokedex();
@@ -33,24 +34,32 @@ function QuickProfile({ profile }: any) {
         fetchPokemon();
     }, [profile]); // Rerun fetchPokemon when `profile` changes
     
-    console.log(profile)
     return (
-        <div className="row">
-            <div className="row row-cols-6 card-group">
-                <div className="card text-white text-center bg-dark" style={{maxWidth: 200}}>
+        <div className="profile-container">
+            <div className="profile-info">
+                <div className="card text-white text-center bg-dark">
                     <div className="card-body">
-                        <h5 className="card-title"><Link to={`/Pokenet/Account/Profile/${profile.username}`}> {profile.firstName} {profile.lastName} </Link></h5>
+                        <h5 className="card-title">
+                            <Link to={`/Pokenet/Account/Profile/${profile.username}`}>
+                                {profile.firstName} {profile.lastName}
+                            </Link>
+                        </h5>
                     </div>
                 </div>
-                {pokemonList.map((poke: any) => (
-                    <div className="card border-dark" style={{maxWidth: 200}}>
-                        <div className="text-center bg-light">
-                            <img className="card-img-top mb-3 mt-3 w-auto" alt="" src={getSprite(poke)}/>
+            </div>
+            <div className="pokemon-card-container">
+                <div className="scrollable-container">
+                    {pokemonList.map((poke: any) => (
+                        <div className="card pokemon-card" key={poke._id}>
+                            <div className="text-center bg-light">
+                                <img className="card-img-top mb-3 mt-3 w-auto" alt={poke.species} src={getSprite(poke)} />
+                            </div>
+                            <div className="card-body">
+                                <h5 className="card-title text-center"><Link to={`/Pokenet/Details/${poke.species}`}>{poke.name}</Link></h5>
+                            </div>
                         </div>
-                        <div className="card-body">
-                            <h5 className="card-title text-center"><Link to={`/Pokenet/Details/${poke.species}`}> {poke.name}</Link></h5>
-                        </div>
-                    </div>))}
+                    ))}
+                </div>
             </div>
         </div>
     );
