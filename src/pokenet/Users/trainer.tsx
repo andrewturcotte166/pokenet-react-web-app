@@ -39,15 +39,17 @@ function Trainer() {
     const fetchPokemon = async () => {
         if (account && account._id) {
             const pokemonList = await pokeClient.findPokemonByUser(account);
-            pokemonList.map(async (poke: any) => {
+            const updatedPokemonList = await Promise.all(pokemonList.map(async (poke: any) => {
                 const pokeData = await P.getPokemonByName(poke.species);
-                poke.sprite = pokeData.sprites.front_default;
-                poke.animatedSprite = pokeData.sprites.other.showdown.front_default;
-                poke.shinySprite = pokeData.sprites.front_shiny;
-                poke.shinyAnimatedSprite = pokeData.sprites.other.showdown.front_shiny;
-            }
-            );
-            setPokemonList(pokemonList);
+                return {
+                    ...poke,
+                    sprite: pokeData.sprites.front_default,
+                    animatedSprite: pokeData.sprites.other.showdown.front_default,
+                    shinySprite: pokeData.sprites.front_shiny,
+                    shinyAnimatedSprite: pokeData.sprites.other.showdown.front_shiny,
+                };
+            }));
+            setPokemonList(updatedPokemonList);
         }
     };
     const getSprite = (poke: any) => {
@@ -70,7 +72,7 @@ function Trainer() {
                 fetchTrainers();
             }
         }
-    }, [location.pathname, account,]);
+    }, [location.pathname, account]);
     return (
         <div>
             {account && (
