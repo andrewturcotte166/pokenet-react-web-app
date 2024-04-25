@@ -44,12 +44,10 @@ function Profile() {
     };
 
     const fetchFriends = async () => {
-        if (profile && profile._id) {
+        if (profile && profile.username) {
             try {
-                console.log(profile.username)
                 const friends = await friendClient.findFriendshipByUser(profile.username);
                 setFriends(friends);
-                console.log(friends);
             } catch (error) {
                 console.log(error);
             }
@@ -61,7 +59,7 @@ function Profile() {
             const userProfiles = await Promise.all(friends.map((friend: any) => client.findUserByUsername(friend.friendName)));
             setFriendsProfiles(userProfiles);
         } catch (error) {
-            console.log("profile not found");
+            console.log("Friend profiles not found");
         }
     }
 
@@ -108,18 +106,18 @@ function Profile() {
     useEffect(() => {
         fetchFriends();
         fetchProfile();
-        findProfile();
     }, []);
 
     useEffect(() => {
         fetchPokemon();
+        findProfile();
         if (profile && profile.role === "TRAINER" && profile.professorId) {
             fetchProfessor();
         }
         if (profile && profile.role === "PROFESSOR") {
             fetchTrainers();
         }
-    }, [profile]);
+    }, [profile, friends,]);
     return (
         <div>
             {profile && (
@@ -243,7 +241,9 @@ function Profile() {
                                     Edit Trainers
                                 </Link>
                             </h3>
-                            {trainers && trainers.map((trainer: any) => (<QuickProfile profile={trainer} />))}
+                            {trainers && trainers.map((trainer: any) => (
+                                <div className="mb-2">
+                                    <QuickProfile profile={trainer} /></div>))}
                         </>
                         ) :
                         (<>
@@ -253,9 +253,11 @@ function Profile() {
                                 (<h4>No professor</h4>)}
                         </>
                         )}
-                    <h3>Friends:</h3>
+                    <h3 className="mt-2">Friends:</h3>
                     {friendsProfiles && friendsProfiles.map((friendProfile: any) => (
-                        <QuickProfile profile={friendProfile} />
+                        <div className="mb-2">
+                            <QuickProfile profile={friendProfile} />
+                        </div>
                     ))}
                     <button className="btn btn-danger" onClick={signout}>
                         Signout
