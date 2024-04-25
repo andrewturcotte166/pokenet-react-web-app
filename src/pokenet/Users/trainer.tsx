@@ -112,7 +112,7 @@ function Trainer() {
                     {account.role === "PROFESSOR" ?
                         (<>
                             <h3>Trainers:</h3>
-                            {trainers && trainers.map((trainer: any) => (<QuickProfile profile={trainer} />))}
+                            {trainers && trainers.map((trainer: any) => (<div className="mb-2"><QuickProfile profile={trainer} /></div>))}
                         </>
                         ) :
                         (<>
@@ -122,8 +122,6 @@ function Trainer() {
                                 (<h4>No professor</h4>)}
                         </>
                         )}
-                    {/* TODO: if logged in, show friends, if not, don't */}
-                    <h3>Friends:</h3>
                 </div>
 
             )
