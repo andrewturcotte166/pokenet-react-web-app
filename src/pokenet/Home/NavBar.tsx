@@ -47,7 +47,7 @@ function NavBar() {
            </div>
             <form className="form-inline my-2 my-lg-0" onSubmit={() => navigate(`/Pokenet/Search/${keyword}`)}>
                 <input className="form-control mr-sm-2" type="search" placeholder="Search" title="try: electric / pikachu / 25" aria-label="Search"
-                    onChange={(e) => setKeyword(e.target.value)} value={keyword}  />
+                    onChange={(e) => setKeyword(e.target.value.toLowerCase())} value={keyword}  />
                 <Link to={`/Pokenet/Search/${keyword}`} className="btn btn-outline-success my-2 my-sm-0"> Search </Link>
             </form>
         </nav>
